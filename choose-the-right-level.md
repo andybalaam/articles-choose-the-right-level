@@ -1,12 +1,27 @@
-# Test at the right level
+# Testing: choose the right level
 
-Testing is hard, we all know that.
+When someone complains that their tests aren't providing the benefits that they
+were promised, or are more trouble than they're worth, some of us may be
+inclined to nod wise and muse that testing is a skill that must be learned.  We
+may even hint at the long years we spent sitting at the foot of a mystic
+testing master to acquire a few of the deep secrets of the art.
 
-But sometimes testing is easy, especially when we are adding new tests.
+Testing is indeed hard, and it isn't always the magic bullet it is sometimes
+portrayed as.
 
-In fact, "breaking in" to an area is always the hardest part.
+But sometimes, testing is easy and good, and we feel productive and safe in the
+knowledge that our code must be correct, because the tests specify our
+requirements simply, and unambiguously.
 
-Why?  Because the hard part is choosing the level at which to test.
+I argue that the most important difference between tests being a pain or a joy
+is the level at which we have chosen to write them.
+
+## What is a level?
+
+. single method
+. 1 or a few independent classes
+. a large group of classes
+. external interfaces
 
 ## Choosing a level - not too wide
 
@@ -97,6 +112,10 @@ real HTTP.
   wait for services to be ready via that clear interface of HTTP.
 
 ## Conclusion
+
+Choose a level where you can:
+a) express your requirements simply
+b) make the code actually work without thousands of mocks
 
 Pick the right level.  You can tell it's right when:
 
