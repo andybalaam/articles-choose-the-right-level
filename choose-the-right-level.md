@@ -96,7 +96,10 @@ A particularly troublesome variant of this situation is when we must instantiate
 large numbers of interconnected mock classes just to create an instance of a
 class under test.  This causes problems when the the code under test changes,
 and tests fail because the mocks no longer express the true behaviour of
-related classes.
+related classes.  More description of how to avoid complex mocks may be found
+in [3]
+
+[3] TODO Mocks are bad, layers are bad
 
 You can tell when tests have too much setup when:
 
@@ -108,9 +111,21 @@ You can tell when tests have too much setup when:
 
 ## Choose multiple levels
 
-Test basic logic and correctness at narrow level
+Normally, a single level of testing will not provide sufficient coverage of
+the interesting parts of our code.  It is almost always necessary to write
+tests at the full-system level in order to have confidence that the system
+works, but the full-system level is usually too wide to allow efficient testing
+of all the details of behaviour.
 
-Test things that could really go wrong with one or two tests at a wider level
+Writing a few simple, real-world tests at the system level (ensuring build and
+integration issues are discovered early), and large numbers of detailed
+correctness tests at the code level (written as the code is written) can often
+be sufficient.  In more complex systems it often makes sense to write tests of
+larger chunks of logic at an intermediate level, and here is where choosing the
+right level can be tricky.  The best level will allow writing "acceptance"
+tests where we can express genuine customer requirements as individual tests,
+and run those tests in a reasonable time, without excluding the code that is
+most likely to contain bugs.
 
 ## Examples
 
