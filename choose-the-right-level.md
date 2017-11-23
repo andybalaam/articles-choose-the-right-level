@@ -2,8 +2,8 @@
 
 When someone complains that their tests aren't providing the benefits that they
 were promised, or are more trouble than they're worth, some of us may be
-inclined to nod wise and muse that testing is a skill that must be learned.  We
-may even hint at the long years we spent sitting at the foot of a mystic
+inclined to nod wisely and muse that testing is a skill that must be learned.
+We may even hint at the long years we spent sitting at the foot of a mystic
 testing master to acquire a few of the deep secrets of the art.
 
 Testing is indeed hard, and it isn't always the magic bullet it is sometimes
@@ -16,30 +16,95 @@ requirements simply, and unambiguously.
 I argue that the most important difference between tests being a pain or a joy
 is the level at which we have chosen to write them.
 
+This article will begin by defining what we mean by a level, then cover how
+to choose what level to test at, and importance of testing at multiple levels.
+Finally we will look at some examples of times the author has seen the
+practical effects of the choice of level on the experience of testing software..
+
 ## What is a level?
 
-. single method
-. 1 or a few independent classes
-. a large group of classes
-. external interfaces
+Each test will run the code under test by calling it via an interface, and may
+also insert test code via "seams"[1].  Choosing a "level" for your tests simply
+means decided what group of interfaces and seams you will use to invoke the
+code under test.
 
-## Choosing a level - not too wide
+[1] TODO test seams Fowler?
 
-too many reasons for failure
+Examples of test levels include:
 
-too hard to debug failures
+* calling individual methods and checking return values.
+* constructing a few independent classes, calling methods on them, and checking
+  object state or return values.
+* instantiating a large group of classes backed by mocks and checking the
+  inputs and outputs via high-level method calls.
+* expressing tests as expected output when certain input is provided to the
+  executable under test.
+* exercising full running systems via external interfaces e.g. HTTP.
 
-too slow
+Note that several of the examples above concern object-oriented code, but the
+idea of choosing a level applies to other coding styles too.
 
-## Choosing a level - not too narrow
+## Choosing a level
 
-doesn't test the actual interesting part
+Often the best way to choose a test level is to try and write some tests at
+different levels and discover which test combines simplicity and power, where
+by "power" here we mean ability to express meaningful test cases.
 
-Bugs in production greeted with a chorus of "but the tests passed!"
+### Not too wide
 
-## Choosing a level - too much setup
+The best level to test you code will not be too wide - your tests should not be
+prone to failure because of the behaviour of areas of code that you are not
+interested in.  Areas you are not interested in could simply be different
+components, or third-party libraries or services.
 
-Mocks upon mocks upon mocks.
+You can tell tests are too wide when:
+
+* there are many possible reasons why a test has failed.
+* it is hard to debug failures because lots of different systems need to be
+  observed.
+* tests run too slowly to give useful feedback.
+
+When tests are too wide you should consider whether there are more direct
+interfaces that may be used to exercise the code under test.  An important
+advantage of the practice of test-driven development [2] is that it tends to
+lead us to build more such interfaces into our design.
+
+[2] TODO: TDD
+
+### Not too narrow
+
+Tests should not be too narrow: the interesting and difficult parts of the code
+must not be left out at test time.  Where we are implementing some pure logic
+it is often easy to write tests that cover that logic, but where we are making
+use of an external component, and the most common problems will be caused by
+misunderstandings of that component's behaviour, it is more difficult to write
+a wide enough test.
+
+You can tell tests are too narrow when:
+
+* production bugs are greeted with a chorus of "but the tests passed!"
+* code that mocks external components contains encoded assumptions about how
+  those components work.
+
+### Not too much setup
+
+Our tests often consist of "given" (set-up), "when" (doing something) and
+"then" (assertions) phases.  When the "given" part is long, error-prone and
+complex, we know we have chosen a level that requires too much setup.
+
+A particularly troublesome variant of this situation is when we must instantiate
+large numbers of interconnected mock classes just to create an instance of a
+class under test.  This causes problems when the the code under test changes,
+and tests fail because the mocks no longer express the true behaviour of
+related classes.
+
+You can tell when tests have too much setup when:
+
+* each test has a long, complex "given" phase at the beginning.
+* it becomes necessary to write test fixture classes just to hold on to all
+  the state needed to start a test.
+* the tests are dependent on the details of multiple interconnected mock
+  classes.
 
 ## Choose multiple levels
 
