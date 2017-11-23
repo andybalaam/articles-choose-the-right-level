@@ -129,21 +129,75 @@ most likely to contain bugs.
 
 ## Examples
 
+The following sections describe examples of real-world projects that involved
+choosing a level at which to test, and an assessment of the success of that
+choice.
+
+### Reporting metrics
+
+In a high-availability messaging product written in Java that emitted a large
+set of metrics for real-time monitoring, the team found that the metrics
+repository was becoming overwhelmed, so we needed to reduce the number of
+individual metrics being emitted.
+
+Metrics reporting was provided by a third-party library which directly makes
+HTTP requests in response to method calls, and provides an API to filter which
+metrics are emitted.
+
+Testing the filtering logic we provided to the library was tricky because it
+was highly interlinked with the behaviour of the library, and there was no
+mechanism available to ask the which metrics would be emitted, or provide a
+mock HTTP client to track the outcome without actually making HTTP requests.
+
+We were left with a choice between unit testing the filtering logic, accepting
+that the assertions we were making were making sweeping assumptions about the
+library behaviour, or testing the logic in an environment that actually
+allowed and tracked the real HTTP requests.
+
+We eventually added an assertion to a test within our full system test
+environment that actually included the metrics repository as well as the
+messaging component, checking that the repository had received only the correct
+subset of metrics.
+
+This seemed most unsatisfactory, and emphasises the need for library writers to
+consider the question not only of how to test their own code, but also how
+users of the library will test theirs [3]: ideally we would be able to provide
+the filtering logic to the metrics library and ask it to list which metrics
+will be emitted.
+
+[3] TODO reference on library writers considering how to test code using it
+
 ### Command line tools
 
-Tested at system level only:
+In a team maintaining a suite of auxiliary utility tools used on the command
+line, we settled on a strategy of writing tests that invoked the actual
+executable commands with pre-specified input and expected output.  The tools
+were written in a variety of technologies, and the tests were written in
+Python, executing the commands using the subprocess module.
 
-* definitely catches real bugs e.g. with arg parsing, stdin/out
-* pushes towards smaller tools, which we want
-* reasonably fast
+One of the design goals of these tools was to ensure each executable had a
+simple, well-defined job so that tools could be combined in flexible pipelines
+to handle unexpected scenarios.
 
-### Metrics filtering
+The choice of using only system-level testing encouraged us to follow this
+design goal, since this team of experienced TDD-ers were uncomfortable writing
+too much code without a direct test, so they tended to break complex code into
+multiple parts to allow coherent testing.
 
-* Can unit test my filtering logic, but it is trivial
-* Real question is: does the framework work the way I think it does?
-* Real functionality only testable at system level
+Additionally, system level testing made it easy to test features that could
+easily be overlooked such as command-line argument processing and formatting
+of output.
 
-This is why we like libraries instead of frameworks
+We found this level to be ideal for testing this kind of tool, and rarely
+felt concerned by the lack of a pure unit test layer.  Sometimes when writing
+Python code we wanted to write unit tests, but this was often addressed by
+breaking complex code into multiple executables.  When writing tools in Bash
+and other less naturally testable environments, we felt liberated by the fact
+that our test setup already made writing tests easy.
+
+Downsides: testing scripts that really do things
+
+Potential downside: speed, but was ok.
 
 ### Game logic
 
