@@ -141,8 +141,8 @@ repository was becoming overwhelmed, so we needed to reduce the number of
 individual metrics being emitted.
 
 Metrics reporting was provided by a third-party library which directly makes
-HTTP requests in response to method calls, and provides an API to filter which
-metrics are emitted.
+HTTP requests in response to method calls, and provides an API to filter the
+list of metrics emitted.
 
 Testing the filtering logic we provided to the library was tricky because it
 was highly interlinked with the behaviour of the library, and there was no
@@ -151,10 +151,10 @@ mock HTTP client to track the outcome without actually making HTTP requests.
 
 We were left with a choice between unit testing the filtering logic, accepting
 that the assertions we were making were making sweeping assumptions about the
-library behaviour, or testing the logic in an environment that actually
-allowed and tracked the real HTTP requests.
+library behaviour (too narrow), or testing the logic in an environment that
+actually allowed and tracked the real HTTP requests (too wide).
 
-We eventually added an assertion to a test within our full system test
+We eventually added assertions to a test within our full system test
 environment that actually included the metrics repository as well as the
 messaging component, checking that the repository had received only the correct
 subset of metrics.
@@ -182,11 +182,10 @@ to handle unexpected scenarios.
 The choice of using only system-level testing encouraged us to follow this
 design goal, since this team of experienced TDD-ers were uncomfortable writing
 too much code without a direct test, so they tended to break complex code into
-multiple parts to allow coherent testing.
+multiple tools to allow coherent testing.
 
-Additionally, system level testing made it easy to test features that could
-easily be overlooked such as command-line argument processing and formatting
-of output.
+System level testing made it easy to test features that could easily be
+overlooked such as command-line argument processing and formatting of output.
 
 We found this level to be ideal for testing this kind of tool, and rarely
 felt concerned by the lack of a pure unit test layer.  Sometimes when writing
@@ -195,23 +194,55 @@ breaking complex code into multiple executables.  When writing tools in Bash
 and other less naturally testable environments, we felt liberated by the fact
 that our test setup already made writing tests easy.
 
-Downsides: testing scripts that really do things
+Most of the tools involved consumed standard input and emitted results to
+standard output, but where they interfaced with external systems such as the
+file system or the network, our approach made it hard to test.  We limited such
+tools to be as simple as possible and did not include them in our test
+coverage, which was not ideal, but rarely caused problems in practice.
 
-Potential downside: speed, but was ok.
+Usually, testing only at the system level will cause tests to perform too
+slowly to be useful, but in this case our suite of hundreds of tools completed
+its test run in under 10 seconds, which was good enough for our development
+process.
 
 ### Game logic
 
-Simple rabbit-based game
+In a rabbit-focussed Android puzzle game [4] we needed to test large numbers
+of scenarios in the game model, including interactions between different
+rabbit behaviours and user actions (e.g. if I give a rabbit the "climbing"
+ability while it's building a bridge, will it stop building?).
 
-Tests of rabbit behaviour are almost all done by constructing a whole (small)
-level using ASCII art.
+[4] Rabbit Escape http://artificialworlds.net/rabbit-escape
 
-* Easy to understand tests
-* Very clear that the behaviour really works
-* Fast enough (but clearly not as fast as it could be)
+Since the game model operates in discrete time steps, using a coarse grid of
+spacial positions, we chose to represent game states in ASCII art-style text
+grids.  This allows us to express tests of behaviour as sequences of text
+"pictures" of the successive game states where e.g. a rabbit is represented as
+an 'r' character standing on a block represented by '#'.
 
-This is a joy to work with.  Very happy with my decision.  Almost no test
-feels pointless, and others can read tests very easily.
+Writing tests of the game-model component at this level, encoded in this way,
+has been remarkably successful.  It is easy to read and understand old tests,
+and turning a bug report into a failing unit test is a satisfying and clear
+process.
+
+The code base contains plenty of "normal" unit tests, but where we need to
+test the in-game behaviour we always turn to this method for its clarity and
+ease of writing tests.  There is some overhead in parsing and rendering text
+representations of the game state, but this has not caused us a performance
+problem so far (hundreds of tests run in about 5 seconds).
+
+One concern in this approach is that tests might become too wide - when testing
+a single behaviour or bug we instantiate a whole game world containing all
+the game logic, as well as the text parsing and rendering, meaning our tests
+could fail for reasons irrelevant to the logic we want to test.  In practice,
+although tests do sometimes start failing unexpectedly, more often than not
+this is because of an interaction we did not anticipate, that we are glad to
+find out about, so the extra coverage of the tests generally works to our
+advantage.
+
+Compared with most test frameworks we have seen, this one is a joy to work
+with: we are very happy with way it works - almost no test feels pointless, and
+newcomers can read and understand the tests very easily.
 
 ### Object model
 
