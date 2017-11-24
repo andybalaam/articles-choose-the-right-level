@@ -246,13 +246,37 @@ newcomers can read and understand the tests very easily.
 
 ### Object model
 
-Unit tests, where unit is defined as a unit of functionality, not a file.
+In a JavaScript object model representing domain objects for an interactive
+charting application, we needed to implement logic to synchronise changes
+between client and server.
 
-Each behaviour involves 1-3 interacting classes.  Tests check that something
-really works, not just that a method can be called.
+We chose to test purely at the unit level, where we took "unit" to mean a piece
+of functionality, rather than an object or module.  Most test modules contained
+multiple tests exercising the same 1-3 objects from the code under test,
+exercising different usage of the same code.  Each test expressed a single
+idea, and each test module served as a specification for that behaviour.
 
-Pushes towards better design: if a test will involve >3 classes, maybe the
-design needs revisiting.
+Writing the tests and code in this way was a pleasure, and the functionality
+was well-covered and easy to understand, partly because of this approach.  One
+advantage of viewing units in this way is that it pushes towards better design:
+if a test module began to involve more than about three objects, we took this
+as a prompt to revisit the design and see whether the behaviour could be
+implemented in a more coherent, simpler structure.
+
+One result of choosing this level was that the interface between client and
+server was not covered by these tests.  Separately, we built tests that
+instantiated a multi-language environment to test the client and server
+interactions, effectively running a JavaScript interpreter within the server
+platform.  These tests were unreliable and failures were hard to understand
+and debug.
+
+In retrospect, our full system test environment (including a full web browser
+and a server environment) might have been a more pragmatic way to ensure the
+client-server communication worked, instead of trying to cover it explicitly
+using headless tests.  Certainly, separating the pure logic into narrow tests
+that touched no file system or network resources proved highly effective for
+giving us confidence in the logic, but did not cover enough to provide full
+confidence in the system as a whole.
 
 ### Web service
 
@@ -275,6 +299,14 @@ real HTTP.
 * Docker-based tests are slow - even slower than Java+mocks.
 * Docker-based tests are more reliable.  No use of global state, and we can
   wait for services to be ready via that clear interface of HTTP.
+
+### Legacy tree merge
+
+C++, lots of code needed to instantiate.
+
+DSL to describe object models (input and output)
+
+Key benefit: diffs of expected vs actual output.
 
 ## Conclusion
 
