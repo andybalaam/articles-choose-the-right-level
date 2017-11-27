@@ -20,7 +20,7 @@ This article will begin by defining what we mean by a level, then cover how to
 choose what level to test at, and the importance of testing at multiple levels.
 Finally we will look at some examples of times the author has seen the
 practical effects of the choice of level on the experience of testing
-software..
+software.
 
 ## What is a level?
 
