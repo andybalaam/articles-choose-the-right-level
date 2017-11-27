@@ -329,36 +329,67 @@ worth the extra time.  The far better comprehensiblity of the tests was perhaps
 the key advantage longer term, as we worked to understand this complex legacy
 system.
 
-### Legacy tree merge
+### Tree merge
 
-C++, lots of code needed to instantiate.
+In a large C++ UI application, functionality existed to merge two existing
+models based on a large set of rules for how to combine potentially clashing
+hierarchical trees.  Building up models in code was complex and verbose, and
+deciding whether the produced model was actually correct was difficult.
 
-DSL to describe object models (input and output)
+We took the decision to describe object models in a custom domain-specific
+language (DSL).  This allowed us to write tests that clearly described the
+input and output conditions without the noise of boilerplate code interfering.
+The DSL took only one line to describe each object in the tree, meaning most
+of our tests became only one or two screens of code, and the expected behaviour
+was clear.
 
-Key benefit: diffs of expected vs actual output.
+Using a custom DSL has many potential disadvantages, such as the lack of a
+debugger, but we had great success using one to describe object models, which
+typically does not need debugging.  We could have taken the route of writing
+simple functions to create objects, and stayed inside main language, but the
+key advantage of the DSL in this case was that test failures produced a clear
+diff (in the notation of the DSL) showing what object model was expected and
+what was actually seen.  This made interpreting test failures so much simpler
+that we could write in a test-driven development style, writing a test and
+using the failure to drive changes in the code under test.  This was of working
+was an order of magnitude more productive than debugging individual assertion
+failures which gave no overall picture of the difference between expected and
+actual behaviour.
+
+By changing the level of testing to a wider level (complete input and expected
+output, instead of hand-coded variations on an input model and expected
+features of the resulting output) we greatly simplified our tests and made them
+much more useful.  The use of a DSL was helpful, but less important than the
+shift in testing level to one that naturally suited the problem.
 
 ## Conclusion
 
-Choose a level where you can:
-a) express your requirements simply
-b) make the code actually work without thousands of mocks
+When deciding how to test your code, it is important to consider what level
+makes sense for the project.
 
-Pick the right level.  You can tell it's right when:
+You should try to choose a level where you can:
+
+1. express your requirements simply
+2. run the important parts of the code (not mock them out)
+3. easily interpret test failures
+
+You can tell when tests are at the right level when:
 
 * No test feels pointless - each test verifies some real part of the spec.
 * There are no gaps where the really interesting stuff happens but can't
-  be tested
-* It is easy to write the next test
+  be tested.
+* It is easy to write the next test.
 
-You can tell it's wrong when:
+You can tell the level is wrong when:
 
-* Tests consist of more setup than actual test code
-* Getting your mock working is harder than writing the real code
-* Tests are unreliable
-* The real interesting behaviour is not tested
-* Adding another similar test is hard
-* It takes ages to run your tests
+* Tests consist of more setup than actual test code.
+* Getting your mock working is harder than writing the real code.
+* Tests are unreliable.
+* The real interesting behaviour is not tested.
+* Adding another similar test is hard.
+* It takes too long to run your tests.
 
-Often you will need 2 levels.
-
-Avoid frameworks.
+Often you will need two levels to cover specific code units and whole-system
+behaviour.  Large code bases may.need more than two levels - where this is
+needed, try to find a level that lets you view a component as having clear
+inputs and outputs.
