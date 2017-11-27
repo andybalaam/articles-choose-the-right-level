@@ -280,25 +280,54 @@ confidence in the system as a whole.
 
 ### Web service
 
-Legacy codebase - lots of discovery needed to figure out how it works.  These
-need to be system-level, or at least "wide" tests, but it still matters which
-seam or level we choose.
+Working in a large, unfamiliar legacy Java code base for a set of web APIs, we
+found an attempt had been made to test at a component level.
 
-Integration tests: some in Java with heavy mocking, some in Docker with
-real HTTP.
+Most of the tests were JUnit methods that relied on a complex stack of mock
+objects that, when correctly instantiated, replaced the code that made external
+connections (e.g. TCP sockets, files) in the production code.
 
-* Java+mocks test are unreliable - all the downsides of system tests (rely on
-  timing, slow, depend on global state)
-* Java+mocks tests are really hard to understand - 95% setup of various hairy
-  mocks that must work perfectly for test to pass.  We are mostly testing
-  the mocks.
-* Docker-based tests exercise service through HTTP interface, which is
-  well-defined and simple.
-* Simulator/mock services are separate from tests and relatively easy to
-  understand.  Some of them are just python3 -m http.server
-* Docker-based tests are slow - even slower than Java+mocks.
-* Docker-based tests are more reliable.  No use of global state, and we can
-  wait for services to be ready via that clear interface of HTTP.
+Because the system's observable behaviour consisted mostly of network traffic,
+we knew we would need plenty of system-level tests to convince ourselves that
+it was behaving correctly.  However, the existing mock-based tests were a
+perfect of example of testing at the wrong level: they were not wide enough to
+cover the real-world behaviour (e.g. what happens when we encounter a
+poorly-configured DNS server), but they had all the down-sides of system-level
+tests: they were unreliable, timing-dependent and slow, and depended on the
+system being in the correct starting state to run correctly.
+
+In the meantime, creating new tests was slow and error-prone due to the large
+number of mock classes needed, and tests often broke when the assumptions
+encoded in the mock structure became invalid due to changes in the code under
+test.  Effectively we were testing the mocks more than the code under test.
+
+Furthermore, many of the components in this system were tightly integrated with
+other components, meaning it was difficult to be sure they were working
+correctly without a true system test that ran both side-by-side.
+
+Our team replaced the heavily-mocked component tests one by one with true
+system-level tests that instantiated different subsets of the full production
+set-up inside repeatable Docker-based environments, and exercised the system
+through its real network interfaces.  Meanwhile, we gradually increased the
+coverage of true unit-level testing by writing unit tests whenever we changed
+the code.  Within months, our test runs were more reliable, tests were
+effective at finding real problems, and the failure rate of the production
+software reduced.
+
+By changing the level at which we were testing, from the complex Java
+interfaces of the external components to the simple and relatively
+slow-changing external HTTP interfaces, we simplified the job of testing,
+making it much clearer what the expected input and output were.  Where fake
+or mock services were needed, they were simple independent code bases, or
+often could be implemented to provide hard-coded HTTP responses, using the
+Python http.server module.
+
+The Docker-based tests were slow - even slower than the old mock-based tests -
+and they were not 100% reliable, but the significant improvement in
+reliability, and the much better coverage or real-world scenarios, was well
+worth the extra time.  The far better comprehensiblity of the tests was perhaps
+the key advantage longer term, as we worked to understand this complex legacy
+system.
 
 ### Legacy tree merge
 
