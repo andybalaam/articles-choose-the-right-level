@@ -16,10 +16,11 @@ requirements simply, and unambiguously.
 I argue that the most important difference between tests being a pain or a joy
 is the level at which we have chosen to write them.
 
-This article will begin by defining what we mean by a level, then cover how
-to choose what level to test at, and importance of testing at multiple levels.
+This article will begin by defining what we mean by a level, then cover how to
+choose what level to test at, and the importance of testing at multiple levels.
 Finally we will look at some examples of times the author has seen the
-practical effects of the choice of level on the experience of testing software..
+practical effects of the choice of level on the experience of testing
+software..
 
 ## What is a level?
 
