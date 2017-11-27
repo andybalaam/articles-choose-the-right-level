@@ -53,7 +53,7 @@ by "power" here we mean ability to express meaningful test cases.
 
 ### Not too wide
 
-The best level to test you code will not be too wide - your tests should not be
+The best level to test your code will not be too wide - your tests should not be
 prone to failure because of the behaviour of areas of code that you are not
 interested in.  Areas you are not interested in could simply be different
 components, or third-party libraries or services.
