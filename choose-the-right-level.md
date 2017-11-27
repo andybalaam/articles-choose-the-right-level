@@ -26,7 +26,7 @@ software.
 
 Each test will run the code under test by calling it via an interface, and may
 also insert test code via "seams"[1].  Choosing a "level" for your tests simply
-means decided what group of interfaces and seams you will use to invoke the
+means deciding what group of interfaces and seams you will use to invoke the
 code under test.
 
 [1] TODO test seams Fowler?
