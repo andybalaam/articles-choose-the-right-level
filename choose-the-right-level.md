@@ -13,10 +13,10 @@ But sometimes, testing is easy and good, and we feel productive and safe in the
 knowledge that our code must be correct, because the tests specify our
 requirements simply, and unambiguously.
 
-I argue that the most important difference between tests being a pain or a joy
-is the level at which we have chosen to write them.
+This article will argue that the most important difference between tests being
+a pain or a joy is the level at which we have chosen to write them.
 
-This article will begin by defining what we mean by a level, then cover how to
+We will begin by defining what we mean by a level, then cover how to
 choose what level to test at, and the importance of testing at multiple levels.
 Finally we will look at some examples of times the author has seen the
 practical effects of the choice of level on the experience of testing
@@ -25,11 +25,9 @@ software.
 ## What is a level?
 
 Each test will run the code under test by calling it via an interface, and may
-also insert test code via "seams"[1].  Choosing a "level" for your tests simply
-means deciding what group of interfaces and seams you will use to invoke the
-code under test.
-
-[1] TODO test seams Fowler?
+also insert test code via "seams"[Feathers].  Choosing a "level" for your tests
+simply means deciding what group of interfaces and seams you will use to invoke
+the code under test.
 
 Examples of test levels include:
 
@@ -49,14 +47,14 @@ idea of choosing a level applies to other coding styles too.
 
 Often the best way to choose a test level is to try and write some tests at
 different levels and discover which test combines simplicity and power, where
-by "power" here we mean ability to express meaningful test cases.
+by power we mean ability to express meaningful test cases.
 
 ### Not too wide
 
 The best level to test your code will not be too wide - your tests should not be
-prone to failure because of the behaviour of areas of code that you are not
-interested in.  Areas you are not interested in could simply be different
-components, or third-party libraries or services.
+prone to failure because of the behaviour of uninteresting areas of code.
+Uninteresting areas could simply be different components, or third-party
+libraries or services.
 
 You can tell tests are too wide when:
 
@@ -67,10 +65,8 @@ You can tell tests are too wide when:
 
 When tests are too wide you should consider whether there are more direct
 interfaces that may be used to exercise the code under test.  An important
-advantage of the practice of test-driven development [2] is that it tends to
+advantage of the practice of test-driven development [TDD] is that it tends to
 lead us to build more such interfaces into our design.
-
-[2] TODO: TDD
 
 ### Not too narrow
 
@@ -98,9 +94,7 @@ large numbers of interconnected mock classes just to create an instance of a
 class under test.  This causes problems when the the code under test changes,
 and tests fail because the mocks no longer express the true behaviour of
 related classes.  More description of how to avoid complex mocks may be found
-in [3]
-
-[3] TODO Mocks are bad, layers are bad
+in [Balaam]
 
 You can tell when tests have too much setup when:
 
@@ -181,7 +175,7 @@ simple, well-defined job so that tools could be combined in flexible pipelines
 to handle unexpected scenarios.
 
 The choice of using only system-level testing encouraged us to follow this
-design goal, since this team of experienced TDD-ers were uncomfortable writing
+design, since our team of experienced TDD-ers were uncomfortable writing
 too much code without a direct test, so they tended to break complex code into
 multiple tools to allow coherent testing.
 
@@ -201,34 +195,32 @@ file system or the network, our approach made it hard to test.  We limited such
 tools to be as simple as possible and did not include them in our test
 coverage, which was not ideal, but rarely caused problems in practice.
 
-Usually, testing only at the system level will cause tests to perform too
+Usually, testing only at the system level will cause tests to run too
 slowly to be useful, but in this case our suite of hundreds of tools completed
 its test run in under 10 seconds, which was good enough for our development
 process.
 
 ### Game logic
 
-In a rabbit-focussed Android puzzle game [4] we needed to test large numbers
-of scenarios in the game model, including interactions between different
-rabbit behaviours and user actions (e.g. if I give a rabbit the "climbing"
-ability while it's building a bridge, will it stop building?).
-
-[4] Rabbit Escape http://artificialworlds.net/rabbit-escape
+In a rabbit-focussed Android puzzle game [RabbitEscape] we needed to test large
+numbers of scenarios in the game model, including interactions between
+different rabbit behaviours and user actions (e.g. if I give a rabbit the
+"climbing" ability while it's building a bridge, will it stop building?).
 
 Since the game model operates in discrete time steps, using a coarse grid of
 spacial positions, we chose to represent game states in ASCII art-style text
 grids.  This allows us to express tests of behaviour as sequences of text
 "pictures" of the successive game states where e.g. a rabbit is represented as
-an 'r' character standing on a block represented by '#'.
+an 'r' character, and a floor block is represented by '#'.
 
 Writing tests of the game-model component at this level, encoded in this way,
 has been remarkably successful.  It is easy to read and understand old tests,
 and turning a bug report into a failing unit test is a satisfying and clear
 process.
 
-The code base contains plenty of "normal" unit tests, but where we need to
-test the in-game behaviour we always turn to this method for its clarity and
-ease of writing tests.  There is some overhead in parsing and rendering text
+The code base contains plenty of "normal" unit tests, but where we need to test
+the in-game behaviour we always turn to this method for its clarity and ease of
+writing tests.  There is some run-time overhead in parsing and rendering text
 representations of the game state, but this has not caused us a performance
 problem so far (hundreds of tests run in about 5 seconds).
 
@@ -297,14 +289,14 @@ poorly-configured DNS server), but they had all the down-sides of system-level
 tests: they were unreliable, timing-dependent and slow, and depended on the
 system being in the correct starting state to run correctly.
 
-In the meantime, creating new tests was slow and error-prone due to the large
+At the same time, creating new tests was slow and error-prone due to the large
 number of mock classes needed, and tests often broke when the assumptions
 encoded in the mock structure became invalid due to changes in the code under
-test.  Effectively we were testing the mocks more than the code under test.
+test.  Effectively we were testing the mocks more than the interesting code.
 
 Furthermore, many of the components in this system were tightly integrated with
 other components, meaning it was difficult to be sure they were working
-correctly without a true system test that ran both side-by-side.
+correctly without a true system test that ran lots of parts simultaneously.
 
 Our team replaced the heavily-mocked component tests one by one with true
 system-level tests that instantiated different subsets of the full production
@@ -325,7 +317,7 @@ Python http.server module.
 
 The Docker-based tests were slow - even slower than the old mock-based tests -
 and they were not 100% reliable, but the significant improvement in
-reliability, and the much better coverage or real-world scenarios, was well
+reliability, and the much better coverage of real-world scenarios, was well
 worth the extra time.  The far better comprehensiblity of the tests was perhaps
 the key advantage longer term, as we worked to understand this complex legacy
 system.
@@ -345,14 +337,15 @@ of our tests became only one or two screens of code, and the expected behaviour
 was clear.
 
 Using a custom DSL has many potential disadvantages, such as the lack of a
-debugger, but we had great success using one to describe object models, which
-typically does not need debugging.  We could have taken the route of writing
+debugger, but we had great success using one to describe object models, perhaps
+because instantiating objects is a simple enough process that it does not need
+to be stepped through line by line.  We could have taken the route of writing
 simple functions to create objects, and stayed inside main language, but the
 key advantage of the DSL in this case was that test failures produced a clear
 diff (in the notation of the DSL) showing what object model was expected and
 what was actually seen.  This made interpreting test failures so much simpler
 that we could write in a test-driven development style, writing a test and
-using the failure to drive changes in the code under test.  This was of working
+using the failure to drive changes in the code under test.  This way of working
 was an order of magnitude more productive than debugging individual assertion
 failures which gave no overall picture of the difference between expected and
 actual behaviour.
@@ -370,9 +363,9 @@ makes sense for the project.
 
 You should try to choose a level where you can:
 
-1. express your requirements simply
-2. run the important parts of the code (not mock them out)
-3. easily interpret test failures
+1. express your requirements simply.
+2. run the important parts of the code (not mock them out).
+3. easily interpret test failures.
 
 You can tell when tests are at the right level when:
 
@@ -394,3 +387,13 @@ Often you will need two levels to cover specific code units and whole-system
 behaviour.  Large code bases may.need more than two levels - where this is
 needed, try to find a level that lets you view a component as having clear
 inputs and outputs.
+
+[Balaam] Balaam, A.J. (2015) "Mocks are Bad, Layers are Bad" In F. Buontempo,
+editor, Overload 127, pages 8-11.
+
+[Feathers] Feathers, M. (2004) "Working Effectively with Legacy Code", Prentice
+Hall
+
+[RabbitEscape] Rabbit Escape, http://artificialworlds.net/rabbit-escape
+
+[TDD] Beck, K.(2002) "Test-Driven Development by Example", Addison Wesley
