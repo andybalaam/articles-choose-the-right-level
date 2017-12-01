@@ -1,13 +1,11 @@
 # Testing: choose the right level
 
-When someone complains that their tests aren't providing the benefits that they
-were promised, or are more trouble than they're worth, some of us may be
+When someone complains that their tests are not providing the benefits that
+they were promised, or are more trouble than they're worth, some of us may be
 inclined to nod wisely and muse that testing is a skill that must be learned.
-We may even hint at the long years we spent sitting at the foot of a mystic
-testing master to acquire a few of the deep secrets of the art.
 
-Testing is indeed hard, and it isn't always the magic bullet it is sometimes
-portrayed as.
+Testing is a skill, bad tests are barely better than no tests at all, and
+sometimes writing tests is painful.
 
 But sometimes, testing is easy and good, and we feel productive and safe in the
 knowledge that our code must be correct, because the tests specify our
