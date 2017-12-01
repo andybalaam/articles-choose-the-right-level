@@ -339,15 +339,15 @@ Using a custom DSL has many potential disadvantages, such as the lack of a
 debugger, but we had great success using one to describe object models, perhaps
 because instantiating objects is a simple enough process that it does not need
 to be stepped through line by line.  We could have taken the route of writing
-simple functions to create objects, and stayed inside main language, but the
-key advantage of the DSL in this case was that test failures produced a clear
-diff (in the notation of the DSL) showing what object model was expected and
-what was actually seen.  This made interpreting test failures so much simpler
-that we could write in a test-driven development style, writing a test and
-using the failure to drive changes in the code under test.  This way of working
-was an order of magnitude more productive than debugging individual assertion
-failures which gave no overall picture of the difference between expected and
-actual behaviour.
+simple functions to create objects, and stayed inside the main language, but
+the key advantage of the DSL in this case was that test failures produced a
+clear diff (in the notation of the DSL) showing what object model was expected
+and what was actually seen.  This made interpreting test failures so much
+simpler that we could write in a test-driven development style, writing a test
+and using the failure to drive changes in the code under test.  This way of
+working was an order of magnitude more productive than debugging individual
+assertion failures which gave no overall picture of the difference between
+expected and actual behaviour.
 
 By changing the level of testing to a wider level (complete input and expected
 output, instead of hand-coded variations on an input model and expected
