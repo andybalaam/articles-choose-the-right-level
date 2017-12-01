@@ -94,7 +94,7 @@ and tests fail because the mocks no longer express the true behaviour of
 related classes.  More description of how to avoid complex mocks may be found
 in [Balaam].
 
-You can tell when tests have too much setup when:
+You can tell tests have too much setup when:
 
 * each test has a long, complex "given" phase at the beginning.
 * it becomes necessary to write test fixture classes just to hold on to all
@@ -366,7 +366,7 @@ You should try to choose a level where you can:
 2. run the important parts of the code (not mock them out).
 3. easily interpret test failures.
 
-You can tell when tests are at the right level when:
+You can tell tests are at the right level when:
 
 * No test feels pointless - each test verifies some real part of the spec.
 * There are no gaps where the really interesting stuff happens but can't
