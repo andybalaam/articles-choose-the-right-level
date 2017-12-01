@@ -219,7 +219,7 @@ process.
 
 The code base contains plenty of "normal" unit tests, but where we need to test
 the in-game behaviour we always turn to this method for its clarity and ease of
-writing tests.  There is some run-time overhead in parsing and rendering text
+writing.  There is some run-time overhead in parsing and rendering text
 representations of the game state, but this has not caused us a performance
 problem so far (hundreds of tests run in about 5 seconds).
 
