@@ -139,7 +139,7 @@ list of metrics emitted.
 
 Testing the filtering logic we provided to the library was tricky because it
 was highly interlinked with the behaviour of the library, and there was no
-mechanism available to ask the which metrics would be emitted, or provide a
+mechanism available to ask which metrics would be emitted, or provide a
 mock HTTP client to track the outcome without actually making HTTP requests.
 
 We were left with a choice between unit testing the filtering logic, accepting
