@@ -156,11 +156,12 @@ subset of metrics.
 
 This seemed most unsatisfactory, and emphasises the need for library writers to
 consider the question not only of how to test their own code, but also how
-users of the library will test theirs [3]: ideally we would be able to provide
+users of the library will test theirs [?]: ideally we would be able to provide
 the filtering logic to the metrics library and ask it to list which metrics
 will be emitted.
 
-[3] TODO reference on library writers considering how to test code using it
+[?] TODO: does anyone know a good reference for this?  I feel like I have
+    read this idea somewhere.
 
 ### Command line tools
 
