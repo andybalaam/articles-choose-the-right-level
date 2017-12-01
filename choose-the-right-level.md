@@ -92,7 +92,7 @@ large numbers of interconnected mock classes just to create an instance of a
 class under test.  This causes problems when the code under test changes,
 and tests fail because the mocks no longer express the true behaviour of
 related classes.  More description of how to avoid complex mocks may be found
-in [Balaam]
+in [Balaam].
 
 You can tell when tests have too much setup when:
 
