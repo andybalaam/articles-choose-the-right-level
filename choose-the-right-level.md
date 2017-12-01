@@ -383,7 +383,7 @@ You can tell the level is wrong when:
 * It takes too long to run your tests.
 
 Often you will need two levels to cover specific code units and whole-system
-behaviour.  Large code bases may.need more than two levels - where this is
+behaviour.  Large code bases may need more than two levels - where this is
 needed, try to find a level that lets you view a component as having clear
 inputs and outputs.
 
