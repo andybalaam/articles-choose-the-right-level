@@ -233,8 +233,8 @@ find out about, so the extra coverage of the tests generally works to our
 advantage.
 
 Compared with most test frameworks we have seen, this one is a joy to work
-with: we are very happy with way it works - almost no test feels pointless, and
-newcomers can read and understand the tests very easily.
+with: we are very happy with the way it works - almost no test feels pointless,
+and newcomers can read and understand the tests very easily.
 
 ### Object model
 
