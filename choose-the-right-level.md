@@ -152,14 +152,11 @@ environment that actually included the metrics repository as well as the
 messaging component, checking that the repository had received only the correct
 subset of metrics.
 
-This seemed most unsatisfactory, and emphasises the need for library writers to
-consider the question not only of how to test their own code, but also how
-users of the library will test theirs [?]: ideally we would be able to provide
-the filtering logic to the metrics library and ask it to list which metrics
-will be emitted.
-
-[?] TODO: does anyone know a good reference for this?  I feel like I have
-    read this idea somewhere.
+This seemed most unsatisfactory, and emphasises the importance of Michael
+Feathers' Golden Rule of API Design: "It's not enough to write tests for an API
+you develop - you have to write unit tests for code that uses your
+API." [Feathers2].   Ideally we would be able to provide the filtering logic to
+the metrics library and ask it to list which metrics will be emitted.
 
 ### Command line tools
 
@@ -392,6 +389,10 @@ editor, Overload 127, pages 8-11.
 
 [Feathers] Feathers, M. (2004) "Working Effectively with Legacy Code", Prentice
 Hall
+
+[Feathers2] Feathers, M (2007) "API Design as if Unit Testing Mattered",
+presentation at SD West 2007
+https://www.scribd.com/document/60239205/As-if-Unit-Testing-Mattered
 
 [RabbitEscape] Rabbit Escape, http://artificialworlds.net/rabbit-escape
 
