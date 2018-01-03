@@ -94,6 +94,10 @@ and tests fail because the mocks no longer express the true behaviour of
 related classes.  More description of how to avoid complex mocks may be found
 in [Balaam].
 
+Note that this item concerns the size of the code actually written within the
+test code.  If the runtime cost of setup code is high, that might indicate a
+test that is too wide, but not one with too much setup in this sense.
+
 You can tell tests have too much setup when:
 
 * each test has a long, complex "given" phase at the beginning.
